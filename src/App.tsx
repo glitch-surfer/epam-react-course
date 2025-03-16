@@ -1,11 +1,15 @@
 import './App.css'
 import {Counter} from "./components/counter.tsx";
 import {SearchForm} from "./components/search-form.tsx";
+import {GenreSelect} from "./components/genre-select.tsx";
 
 function App() {
+    const genres = ['ALL', 'DOCUMENTARY', 'COMEDY', 'HORROR', 'CRIME'];
+
     return (
         <div className="flex flex-col gap-4">
             <SearchForm onSearch={console.log} initialQuery="Star Wars"/>
+            <GenreSelect genres={genres} onSelect={console.log} selectedGenre={genres[0]} />
             <div className="card">
                 <Counter initialValue={42}/>
             </div>
