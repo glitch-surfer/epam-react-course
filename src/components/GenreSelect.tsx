@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 
 interface GenreSelectProps {
     genres: string[];
@@ -7,9 +7,7 @@ interface GenreSelectProps {
 }
 
 export const GenreSelect: React.FC<GenreSelectProps> = ({genres = [], selectedGenre, onSelect}) => {
-    const [selected, setSelected] = useState(selectedGenre);
     const handleSelect = (genre: string) => {
-        setSelected(genre);
         onSelect(genre);
     }
 
@@ -23,7 +21,7 @@ export const GenreSelect: React.FC<GenreSelectProps> = ({genres = [], selectedGe
             text-white text-xl uppercase py-4 px-2 relative
             hover:after:bg-red-600 hover:after:absolute hover:after:h-1 hover:after:w-full hover:after:bottom-0 hover:after:left-0
             ${
-                        selected === genre
+                        selectedGenre === genre
                             ? 'after:bg-red-600 after:absolute after:h-1 after:w-full after:bottom-0 after:left-0 font-bold'
                             : 'font-normal opacity-70 hover:opacity-100'
                     }
