@@ -1,7 +1,7 @@
 import './App.css'
-import {Counter} from "./components/counter.tsx";
-import {SearchForm} from "./components/search-form.tsx";
-import {GenreSelect} from "./components/genre-select.tsx";
+import {Counter} from "./components/Counter.tsx";
+import {SearchForm} from "./components/SearchForm.tsx";
+import {GenreSelect} from "./components/GenreSelect.tsx";
 
 function App() {
     const genres = ['ALL', 'DOCUMENTARY', 'COMEDY', 'HORROR', 'CRIME'];
