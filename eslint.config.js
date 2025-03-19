@@ -7,6 +7,7 @@ import reactx from "eslint-plugin-react-x";
 import reactDom from "eslint-plugin-react-dom";
 import react from "eslint-plugin-react";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
+import pluginJest from "eslint-plugin-jest";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -18,6 +19,7 @@ export default tseslint.config(
       reactx.configs.recommended,
       reactDom.configs.recommended,
       eslintConfigPrettier,
+      pluginJest,
     ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
