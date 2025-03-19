@@ -19,7 +19,6 @@ export default tseslint.config(
       reactx.configs.recommended,
       reactDom.configs.recommended,
       eslintConfigPrettier,
-      pluginJest,
     ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -34,6 +33,7 @@ export default tseslint.config(
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       react,
+      pluginJest,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
