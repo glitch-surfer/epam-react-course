@@ -1,6 +1,7 @@
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { SearchForm } from "../SearchForm";
+import { userEvent } from "@testing-library/user-event";
 
 describe("SearchForm Component", () => {
   test("renders input with initial value from props", () => {
@@ -13,7 +14,7 @@ describe("SearchForm Component", () => {
     expect(inputElement.value).toBe(initialQuery);
   });
 
-  test("calls onSearch with input value when Submit button is clicked", () => {
+  test("calls onSearch with input value when Submit button is clicked", async () => {
     const mockOnSearch = jest.fn();
     const testQuery = "test search";
 
@@ -24,15 +25,15 @@ describe("SearchForm Component", () => {
     );
     const submitButton = screen.getByText("SEARCH");
 
-    fireEvent.change(inputElement, { target: { value: testQuery } });
+    await userEvent.type(inputElement, testQuery);
 
-    fireEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     expect(mockOnSearch).toHaveBeenCalledWith(testQuery);
     expect(mockOnSearch).toHaveBeenCalledTimes(1);
   });
 
-  test("updates input value when typing", () => {
+  test("updates input value when typing", async () => {
     render(<SearchForm onSearch={() => {}} />);
 
     const inputElement = screen.getByPlaceholderText(
@@ -40,7 +41,7 @@ describe("SearchForm Component", () => {
     ) as HTMLInputElement;
     const testValue = "test input";
 
-    fireEvent.change(inputElement, { target: { value: testValue } });
+    await userEvent.type(inputElement, testValue);
 
     expect(inputElement.value).toBe(testValue);
   });

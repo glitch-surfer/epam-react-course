@@ -1,6 +1,7 @@
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { GenreSelect } from "../GenreSelect";
+import { userEvent } from "@testing-library/user-event";
 
 describe("GenreSelect Component", () => {
   const mockGenres = ["Action", "Comedy", "Drama", "Horror"];
@@ -43,7 +44,7 @@ describe("GenreSelect Component", () => {
       });
   });
 
-  test("calls onSelect with correct genre when clicked", () => {
+  test("calls onSelect with correct genre when clicked", async () => {
     const mockOnSelect = jest.fn();
     const genreToClick = "Drama";
 
@@ -56,7 +57,7 @@ describe("GenreSelect Component", () => {
     );
 
     const genreButton = screen.getByText(genreToClick);
-    fireEvent.click(genreButton);
+    await userEvent.click(genreButton);
 
     expect(mockOnSelect).toHaveBeenCalledTimes(1);
     expect(mockOnSelect).toHaveBeenCalledWith(genreToClick);
