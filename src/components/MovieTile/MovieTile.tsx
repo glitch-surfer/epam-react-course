@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Image } from "../utils/Image.tsx";
+import {Genres} from "../utils/Genres.tsx";
 
 export interface Movie {
   id: string;
@@ -50,14 +52,7 @@ export const MovieTile: React.FC<MovieTileProps> = ({
       onClick={handleClick}
     >
       <div className="w-full aspect-[2/3]">
-        <img
-          src={movie.imageUrl}
-          alt={movie.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "src/assets/img.png";
-          }}
-        />
+        <Image src={movie.imageUrl} alt={movie.name} />
         <div className="absolute top-0 right-0 p-2">
           <button
             className="w-8 h-8 flex items-center justify-center text-white text-2xl font-bold hover:opacity-80"
@@ -90,7 +85,7 @@ export const MovieTile: React.FC<MovieTileProps> = ({
             {movie.releaseYear}
           </span>
         </div>
-        <p className="text-sm text-gray-400 mt-2">{movie.genres.join(", ")}</p>
+        <Genres genres={movie.genres} />
       </div>
     </div>
   );
