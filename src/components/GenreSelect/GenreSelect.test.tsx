@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { GenreSelect } from "../GenreSelect";
+import { GenreSelect } from "./GenreSelect.tsx";
 import { userEvent } from "@testing-library/user-event";
 
 describe("GenreSelect Component", () => {
