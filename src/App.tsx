@@ -1,5 +1,5 @@
 import "./App.css";
-import { Counter } from "./components/Counter.tsx";
+import { Counter } from "./components/Counter/Counter.tsx";
 import { SearchForm } from "./components/SearchForm.tsx";
 import { GenreSelect } from "./components/GenreSelect.tsx";
 
