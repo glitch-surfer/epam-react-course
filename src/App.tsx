@@ -1,6 +1,6 @@
 import "./App.css";
 import { Counter } from "./components/Counter/Counter.tsx";
-import { SearchForm } from "./components/SearchForm.tsx";
+import { SearchForm } from "./components/SearchForm/SearchForm.tsx";
 import { GenreSelect } from "./components/GenreSelect/GenreSelect.tsx";
 
 function App() {
