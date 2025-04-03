@@ -1,17 +1,7 @@
 import React from "react";
 import { Image } from "../utils/Image.tsx";
 import { Genres } from "../utils/Genres.tsx";
-
-export interface MovieDetailsData {
-  id: string;
-  imageUrl: string;
-  name: string;
-  releaseYear: number;
-  rating: number;
-  duration: string;
-  description: string;
-  genres?: string[];
-}
+import { MovieDetailsData } from "../../models/movie.interface.ts";
 
 interface MovieDetailsProps {
   movie: MovieDetailsData;
@@ -35,6 +25,7 @@ export const MovieDetails: React.FC<MovieDetailsProps> = ({
       <div className="flex-1 p-6 md:p-8">
         {onClose && (
           <button
+            type="button"
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-400 hover:text-white"
           >

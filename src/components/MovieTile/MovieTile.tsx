@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { Image } from "../utils/Image.tsx";
-import {Genres} from "../utils/Genres.tsx";
-
-export interface Movie {
-  id: string;
-  imageUrl: string;
-  name: string;
-  releaseYear: number;
-  genres: string[];
-}
+import { Genres } from "../utils/Genres.tsx";
+import { Movie } from "../../models/movie.interface.ts";
 
 interface MovieTileProps {
   movie: Movie;
@@ -55,13 +48,14 @@ export const MovieTile: React.FC<MovieTileProps> = ({
         <Image src={movie.imageUrl} alt={movie.name} />
         <div className="absolute top-0 right-0 p-2">
           <button
+            type="button"
             className="w-8 h-8 flex items-center justify-center text-white text-2xl font-bold hover:opacity-80"
             onClick={handleMenuClick}
           >
             ⋮
           </button>
           {showMenu && (
-            <div className="absolute top-10 right-2 bg-white rounded-md shadow-lg z-10 min-w-[120px] py-1">
+            <div className="absolute top-10 right-2 rounded-md shadow-lg z-10 min-w-[120px] py-1">
               <button
                 onClick={handleEdit}
                 className="w-full px-4 py-2 text-left hover:bg-gray-100 transition-colors"
@@ -85,7 +79,7 @@ export const MovieTile: React.FC<MovieTileProps> = ({
             {movie.releaseYear}
           </span>
         </div>
-        <Genres genres={movie.genres} />
+        <Genres genres={movie.genres ?? []} />
       </div>
     </div>
   );

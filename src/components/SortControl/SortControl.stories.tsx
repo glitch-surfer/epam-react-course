@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { SortControl } from "./SortControl";
+import { SortControl, SortOption } from "./SortControl";
 import { useState } from "react";
 
 const meta: Meta<typeof SortControl> = {
@@ -26,9 +26,7 @@ export const Default: Story = {
 };
 
 export const Interactive = () => {
-  const [currentSort, setCurrentSort] = useState<"release_date" | "title">(
-    "release_date",
-  );
+  const [currentSort, setCurrentSort] = useState<SortOption>("release_date");
 
   return (
     <SortControl currentSort={currentSort} onSortChange={setCurrentSort} />

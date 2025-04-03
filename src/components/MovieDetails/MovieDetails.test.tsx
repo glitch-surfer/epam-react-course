@@ -22,8 +22,7 @@ describe("MovieDetails", () => {
     expect(screen.getByText("8.5/10")).toBeInTheDocument();
     expect(screen.getByText("2h 15min")).toBeInTheDocument();
     expect(screen.getByText("Test movie description")).toBeInTheDocument();
-    expect(screen.getByText("Action")).toBeInTheDocument();
-    expect(screen.getByText("Adventure")).toBeInTheDocument();
+    expect(screen.getByText("Action, Adventure")).toBeInTheDocument();
 
     const image = screen.getByAltText("Test Movie");
     expect(image).toHaveAttribute("src", "https://example.com/movie.jpg");
@@ -49,8 +48,6 @@ describe("MovieDetails", () => {
   it("renders genres when provided", () => {
     render(<MovieDetails movie={mockMovie} />);
 
-    mockMovie.genres.forEach((genre) => {
-      expect(screen.getByText(genre)).toBeInTheDocument();
-    });
+    expect(screen.getByText(mockMovie.genres.join(", "))).toBeInTheDocument();
   });
 });

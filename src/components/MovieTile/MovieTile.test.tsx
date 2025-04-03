@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MovieTile } from "./MovieTile";
 import { userEvent } from "@storybook/test";
 
@@ -34,7 +34,7 @@ describe("MovieTile", () => {
   it("shows context menu when menu button is clicked", async () => {
     render(<MovieTile movie={mockMovie} />);
 
-    await act(async () => await userEvent.click(screen.getByText("⋮")));
+    await userEvent.click(screen.getByText("⋮"));
     expect(screen.getByText("Edit")).toBeInTheDocument();
     expect(screen.getByText("Delete")).toBeInTheDocument();
   });
@@ -43,10 +43,8 @@ describe("MovieTile", () => {
     const handleEdit = jest.fn();
     render(<MovieTile movie={mockMovie} onEdit={handleEdit} />);
 
-    await act(async () => {
-      await userEvent.click(screen.getByText("⋮"));
-      await userEvent.click(screen.getByText("Edit"));
-    });
+    await userEvent.click(screen.getByText("⋮"));
+    await userEvent.click(screen.getByText("Edit"));
 
     expect(handleEdit).toHaveBeenCalledWith(mockMovie);
   });
@@ -55,10 +53,9 @@ describe("MovieTile", () => {
     const handleDelete = jest.fn();
     render(<MovieTile movie={mockMovie} onDelete={handleDelete} />);
 
-    await act(async () => {
-      await userEvent.click(screen.getByText("⋮"));
-      await userEvent.click(screen.getByText("Delete"));
-    });
+    await userEvent.click(screen.getByText("⋮"));
+    await userEvent.click(screen.getByText("Delete"));
+
     expect(handleDelete).toHaveBeenCalledWith(mockMovie);
   });
 });

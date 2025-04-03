@@ -43,18 +43,4 @@ describe("SortControl", () => {
     expect(options[0]).toHaveValue("release_date");
     expect(options[1]).toHaveValue("title");
   });
-
-  it("applies custom className when provided", () => {
-    const handleSort = jest.fn();
-    render(
-      <SortControl
-        currentSort="release_date"
-        onSortChange={handleSort}
-      />,
-    );
-
-    expect(screen.getByRole("combobox").parentElement).toHaveClass(
-      "custom-class",
-    );
-  });
 });
