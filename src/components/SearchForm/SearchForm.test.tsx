@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { SearchForm } from "../SearchForm";
+import { SearchForm } from "./SearchForm.tsx";
 import { userEvent } from "@testing-library/user-event";
 
 describe("SearchForm Component", () => {
