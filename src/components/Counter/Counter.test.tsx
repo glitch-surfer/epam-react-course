@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { userEvent } from "@testing-library/user-event";
-import { Counter } from "../Counter";
+import { Counter } from "./Counter.tsx";
 
 describe("Counter Component", () => {
   test("renders initial value provided in props", () => {
