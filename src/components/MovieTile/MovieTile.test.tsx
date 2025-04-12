@@ -3,23 +3,31 @@ import { MovieTile } from "./MovieTile";
 import { userEvent } from "@storybook/test";
 
 const mockMovie = {
-  id: "1",
-  imageUrl: "https://example.com/movie.jpg",
-  name: "Test Movie",
-  releaseYear: 2023,
-  genres: ["Action", "Adventure"],
+  title: "La La Land",
+  tagline: "Here's to the fools who dream.",
+  vote_average: 7.9,
+  vote_count: 6782,
+  release_date: "2016-12-29",
+  poster_path:
+    "https://image.tmdb.org/t/p/w500/ylXCdC106IKiarftHkcacasaAcb.jpg",
+  overview:
+    "Mia, an aspiring actress, serves lattes to movie stars in between auditions and Sebastian, a jazz musician, scrapes by playing cocktail party gigs in dingy bars, but as success mounts they are faced with decisions that begin to fray the fragile fabric of their love affair, and the dreams they worked so hard to maintain in each other threaten to rip them apart.",
+  budget: 30000000,
+  revenue: 445435700,
+  runtime: 128,
+  genres: ["Comedy", "Drama", "Romance"],
+  id: 313369,
 };
 
 describe("MovieTile", () => {
   it("renders movie information correctly", () => {
     render(<MovieTile movie={mockMovie} />);
 
-    expect(screen.getByText("Test Movie")).toBeInTheDocument();
-    expect(screen.getByText("2023")).toBeInTheDocument();
-    expect(screen.getByText("Action, Adventure")).toBeInTheDocument();
-    expect(screen.getByAltText("Test Movie")).toHaveAttribute(
+    expect(screen.getByText("La La Land")).toBeInTheDocument();
+    expect(screen.getByText("2016-12-29")).toBeInTheDocument();
+    expect(screen.getByAltText("La La Land")).toHaveAttribute(
       "src",
-      "https://example.com/movie.jpg",
+      "https://image.tmdb.org/t/p/w500/ylXCdC106IKiarftHkcacasaAcb.jpg",
     );
   });
 
@@ -27,7 +35,7 @@ describe("MovieTile", () => {
     const handleClick = jest.fn();
     render(<MovieTile movie={mockMovie} onClick={handleClick} />);
 
-    await userEvent.click(screen.getByText("Test Movie"));
+    await userEvent.click(screen.getByText("La La Land"));
     expect(handleClick).toHaveBeenCalledWith(mockMovie);
   });
 
