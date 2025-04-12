@@ -72,16 +72,20 @@ function App() {
         />
         <SortControl currentSort={sort} onSortChange={setSort} />
       </div>
-      <div className="flex flex-wrap gap-4">
-        {movies.map((movie) => (
-          <MovieTile
-            key={movie.id}
-            movie={movie}
-            onClick={(movie) => setSelectedMovie(movie)}
-            onEdit={(movie) => console.log("Edit:", movie)}
-            onDelete={(movie) => console.log("Delete:", movie)}
-          />
-        ))}
+      <div className="flex flex-wrap gap-4 grow">
+        {movies.length ? (
+          movies.map((movie) => (
+            <MovieTile
+              key={movie.id}
+              movie={movie}
+              onClick={(movie) => setSelectedMovie(movie)}
+              onEdit={(movie) => console.log("Edit:", movie)}
+              onDelete={(movie) => console.log("Delete:", movie)}
+            />
+          ))
+        ) : (
+          <p>No movies found</p>
+        )}
       </div>
     </div>
   );
