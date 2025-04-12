@@ -45,7 +45,7 @@ export const MovieTile: React.FC<MovieTileProps> = ({
       onClick={handleClick}
     >
       <div className="w-full aspect-[2/3]">
-        <Image src={movie.imageUrl} alt={movie.name} />
+        <Image src={movie.poster_path} alt={movie.title} />
         <div className="absolute top-0 right-0 p-2">
           <button
             type="button"
@@ -74,12 +74,12 @@ export const MovieTile: React.FC<MovieTileProps> = ({
       </div>
       <div className="p-4 text-white">
         <div className="flex justify-between items-start">
-          <h3 className="text-xl font-normal m-0">{movie.name}</h3>
+          <h3 className="text-xl font-normal m-0">{movie.title}</h3>
           <span className="text-sm border border-white rounded px-2.5 py-1">
-            {movie.releaseYear}
+            {movie.release_date}
           </span>
         </div>
-        <Genres genres={movie.genres ?? []} />
+        <Genres genres={movie.genres} />
       </div>
     </div>
   );

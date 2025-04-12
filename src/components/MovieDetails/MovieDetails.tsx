@@ -1,10 +1,10 @@
 import React from "react";
 import { Image } from "../shared/Image.tsx";
 import { Genres } from "../shared/Genres.tsx";
-import { MovieDetailsData } from "../../models/movie.interface.ts";
+import { Movie } from "../../models/movie.interface.ts";
 
 interface MovieDetailsProps {
-  movie: MovieDetailsData;
+  movie: Movie;
   onClose?: () => void;
 }
 
@@ -17,7 +17,7 @@ export const MovieDetails: React.FC<MovieDetailsProps> = ({
       {/* Left side - Image */}
       <div className="md:w-1/3 lg:w-1/4">
         <div className="relative aspect-[2/3] w-full">
-          <Image src={movie.imageUrl} alt={movie.name} />
+          <Image src={movie.poster_path} alt={movie.title} />
         </div>
       </div>
 
@@ -49,9 +49,9 @@ export const MovieDetails: React.FC<MovieDetailsProps> = ({
         <div className="space-y-4">
           {/* Title and Year */}
           <div className="flex items-start justify-between">
-            <h1 className="text-3xl font-bold">{movie.name}</h1>
+            <h1 className="text-3xl font-bold">{movie.title}</h1>
             <span className="text-lg border border-white rounded px-3 py-1">
-              {movie.releaseYear}
+              {movie.release_date}
             </span>
           </div>
 
@@ -64,7 +64,7 @@ export const MovieDetails: React.FC<MovieDetailsProps> = ({
               >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
-              <span>{movie.rating}/10</span>
+              <span>{movie.vote_average}/10</span>
             </div>
             <div className="flex items-center">
               <svg
@@ -80,15 +80,15 @@ export const MovieDetails: React.FC<MovieDetailsProps> = ({
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span>{movie.duration}</span>
+              <span>{movie.runtime}</span>
             </div>
           </div>
 
-          {movie.genres && <Genres genres={movie.genres} />}
+          {movie.genres.length && <Genres genres={movie.genres} />}
 
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-2">Overview</h2>
-            <p className="text-gray-300 leading-relaxed">{movie.description}</p>
+            <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
           </div>
         </div>
       </div>
