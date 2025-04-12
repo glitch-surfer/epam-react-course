@@ -1,6 +1,6 @@
 import React from "react";
-import { Image } from "../utils/Image.tsx";
-import { Genres } from "../utils/Genres.tsx";
+import { Image } from "../shared/Image.tsx";
+import { Genres } from "../shared/Genres.tsx";
 import { MovieDetailsData } from "../../models/movie.interface.ts";
 
 interface MovieDetailsProps {

@@ -37,20 +37,21 @@ export const Dialog: React.FC<DialogProps> = ({
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50">
-        {/* Overlay */}
-        <div
-          className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-          onClick={onClose}
-        />
+      <FocusTrap
+        focusTrapOptions={{
+          initialFocus: false,
+          fallbackFocus: "#dialog-close-button",
+        }}
+      >
+        <div className="fixed inset-0 z-50">
+          {/* Overlay */}
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={onClose}
+            data-testid="dialog-overlay"
+          />
 
-        {/* Dialog */}
-        <FocusTrap
-          focusTrapOptions={{
-            initialFocus: false,
-            fallbackFocus: "#dialog-close-button",
-          }}
-        >
+          {/* Dialog */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
             <div className="bg-[#232323] rounded-lg shadow-xl mx-4">
               {/* Header */}
@@ -80,8 +81,8 @@ export const Dialog: React.FC<DialogProps> = ({
               <div className="p-6 text-white">{children}</div>
             </div>
           </div>
-        </FocusTrap>
-      </div>
+        </div>
+      </FocusTrap>
     </Portal>
   );
 };
