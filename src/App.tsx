@@ -2,7 +2,7 @@ import "./App.css";
 import { SearchForm } from "./components/SearchForm/SearchForm.tsx";
 import { GenreSelect } from "./components/GenreSelect/GenreSelect.tsx";
 import { MovieTile } from "./components/MovieTile/MovieTile.tsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   SortControl,
   SortOption,
@@ -20,16 +20,24 @@ function App() {
   const [sort, setSort] = useState(SortOption.ReleaseDate);
   const [query, setQuery] = useState("Star Wars");
 
+  const abortControllerRef = useRef<AbortController | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const abortController = new AbortController();
+
       try {
         const filter =
           selectedGenre === "ALL" ? "" : selectedGenre.toLowerCase();
+
         const response = await fetch(
           `http://localhost:4000/movies?search=${query}&filter=${filter}&searchBy=title&sortBy=${sort}&sortOrder=desc`,
+          { signal: abortController.signal },
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status.toString()}`);
@@ -41,6 +49,8 @@ function App() {
       } finally {
         setLoading(false);
       }
+
+      abortControllerRef.current = abortController;
     };
 
     fetchData();
