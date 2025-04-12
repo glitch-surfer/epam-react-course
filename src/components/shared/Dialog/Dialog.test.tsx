@@ -40,8 +40,7 @@ describe("Dialog", () => {
 
   it("calls onClose when clicking the overlay", async () => {
     render(<Dialog {...defaultProps} />);
-    const overlay = screen.getByText("Test Dialog").parentElement?.parentElement
-      ?.previousSibling as HTMLElement | null;
+    const overlay = screen.getByTestId("dialog-overlay") as HTMLElement | null;
     if (overlay) {
       await userEvent.click(overlay);
       expect(mockOnClose).toHaveBeenCalledTimes(1);
