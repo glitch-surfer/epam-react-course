@@ -7,8 +7,9 @@ import {
   SortControl,
   SortOption,
 } from "./components/SortControl/SortControl.tsx";
+import {Movie} from "./models/movie.interface.ts";
 
-const movies = [
+const mockMovies = [
   {
     id: "1",
     imageUrl: "https://example.com/pulp-fiction.jpg",
@@ -48,12 +49,15 @@ const movies = [
 const genres = ["ALL", "DOCUMENTARY", "COMEDY", "HORROR", "CRIME"];
 
 function App() {
+  const [movies, setMovies] = useState(mockMovies);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedGenre, setSelectedGenre] = useState(genres[0]);
   const [sort, setSort] = useState(SortOption.ReleaseDate);
+  const [query, setQuery] = useState("Star Wars");
 
   return (
     <div className="flex flex-col gap-4">
-      <SearchForm onSearch={console.log} initialQuery="Star Wars" />
+      <SearchForm onSearch={setQuery} initialQuery={query} />
       <div className="flex gap-4 justify-between">
         <GenreSelect
           genres={genres}
@@ -67,7 +71,7 @@ function App() {
           <MovieTile
             key={movie.id}
             movie={movie}
-            onClick={(movie) => console.log("Clicked:", movie)}
+            onClick={(movie) => setSelectedMovie(movie)}
             onEdit={(movie) => console.log("Edit:", movie)}
             onDelete={(movie) => console.log("Delete:", movie)}
           />
