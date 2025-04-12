@@ -1,9 +1,12 @@
 import "./App.css";
-import { Counter } from "./components/Counter/Counter.tsx";
 import { SearchForm } from "./components/SearchForm/SearchForm.tsx";
 import { GenreSelect } from "./components/GenreSelect/GenreSelect.tsx";
 import { MovieTile } from "./components/MovieTile/MovieTile.tsx";
 import { useState } from "react";
+import {
+  SortControl,
+  SortOption,
+} from "./components/SortControl/SortControl.tsx";
 
 const movies = [
   {
@@ -46,14 +49,19 @@ const genres = ["ALL", "DOCUMENTARY", "COMEDY", "HORROR", "CRIME"];
 
 function App() {
   const [selectedGenre, setSelectedGenre] = useState(genres[0]);
+  const [sort, setSort] = useState(SortOption.ReleaseDate);
+
   return (
     <div className="flex flex-col gap-4">
       <SearchForm onSearch={console.log} initialQuery="Star Wars" />
-      <GenreSelect
-        genres={genres}
-        onSelect={setSelectedGenre}
-        selectedGenre={selectedGenre}
-      />
+      <div className="flex gap-4 justify-between">
+        <GenreSelect
+          genres={genres}
+          onSelect={setSelectedGenre}
+          selectedGenre={selectedGenre}
+        />
+        <SortControl currentSort={sort} onSortChange={setSort} />
+      </div>
       <div className="flex flex-wrap gap-4">
         {movies.map((movie) => (
           <MovieTile
@@ -64,9 +72,6 @@ function App() {
             onDelete={(movie) => console.log("Delete:", movie)}
           />
         ))}
-      </div>
-      <div className="card">
-        <Counter initialValue={42} />
       </div>
     </div>
   );
