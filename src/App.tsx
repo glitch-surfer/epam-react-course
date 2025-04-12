@@ -7,7 +7,8 @@ import {
   SortControl,
   SortOption,
 } from "./components/SortControl/SortControl.tsx";
-import {Movie} from "./models/movie.interface.ts";
+import { Movie } from "./models/movie.interface.ts";
+import { MovieDetails } from "./components/MovieDetails/MovieDetails.tsx";
 
 const mockMovies = [
   {
@@ -57,7 +58,14 @@ function App() {
 
   return (
     <div className="flex flex-col gap-4">
-      <SearchForm onSearch={setQuery} initialQuery={query} />
+      {selectedMovie ? (
+        <MovieDetails
+          movie={selectedMovie as any}/*todo refactor*/
+          onClose={() => setSelectedMovie(null)}
+        />
+      ) : (
+        <SearchForm onSearch={setQuery} initialQuery={query} />
+      )}
       <div className="flex gap-4 justify-between">
         <GenreSelect
           genres={genres}
