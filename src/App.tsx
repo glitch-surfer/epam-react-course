@@ -10,15 +10,20 @@ import {
 import { Movie } from "./models/movie.interface.ts";
 import { MovieDetails } from "./components/MovieDetails/MovieDetails.tsx";
 import { MoviesResponse } from "./models/api.ts";
+import { useSearchParams } from "react-router-dom";
 
 const genres = ["ALL", "DOCUMENTARY", "COMEDY", "HORROR", "CRIME"];
 
 function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState(genres[0]);
-  const [sort, setSort] = useState(SortOption.ReleaseDate);
-  const [query, setQuery] = useState("Star Wars");
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const query = searchParams.get("query") ?? "Star Wars";
+  const selectedGenre = searchParams.get("genre") ?? genres[0];
+  const sort =
+    (searchParams.get("sort")) ?? SortOption.ReleaseDate;
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,6 +61,18 @@ function App() {
     fetchData();
   }, [query, selectedGenre, sort]);
 
+  const handleSearch = (newQuery: string) => {
+    setSearchParams({ query: newQuery, genre: selectedGenre, sort });
+  };
+
+  const handleGenreChange = (newGenre: string) => {
+    setSearchParams({ query, genre: newGenre, sort });
+  };
+
+  const handleSortChange = (newSort: SortOption) => {
+    setSearchParams({ query, genre: selectedGenre, sort: newSort });
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -72,15 +89,15 @@ function App() {
           onClose={() => setSelectedMovie(null)}
         />
       ) : (
-        <SearchForm onSearch={setQuery} initialQuery={query} />
+        <SearchForm onSearch={handleSearch} initialQuery={query} />
       )}
       <div className="flex gap-4 justify-between">
         <GenreSelect
           genres={genres}
-          onSelect={setSelectedGenre}
+          onSelect={handleGenreChange}
           selectedGenre={selectedGenre}
         />
-        <SortControl currentSort={sort} onSortChange={setSort} />
+        <SortControl currentSort={sort as SortOption} onSortChange={handleSortChange} />
       </div>
       <div className="flex flex-wrap gap-4 grow">
         {movies.length ? (
