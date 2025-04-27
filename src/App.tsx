@@ -8,7 +8,12 @@ import {
 } from "./components/SortControl/SortControl.tsx";
 import { Movie } from "./models/movie.interface.ts";
 import { MoviesResponse } from "./models/api.ts";
-import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 const genres = ["ALL", "DOCUMENTARY", "COMEDY", "HORROR", "CRIME"];
 
@@ -20,6 +25,7 @@ function App() {
   const query = searchParams.get("query") ?? "Star Wars";
   const selectedGenre = searchParams.get("genre") ?? genres[0];
   const sort = searchParams.get("sort") ?? SortOption.ReleaseDate;
+  const isMovieDetailsOpen = useLocation().pathname !== "/";
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,6 +78,8 @@ function App() {
   const setSelectedMovie = (movie: Movie) =>
     navigate(`/${movie.id.toString()}?${searchParams.toString()}`);
 
+  const handleAddMovie = () => navigate(`/new?${searchParams.toString()}`);
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -82,6 +90,14 @@ function App() {
 
   return (
     <div className="flex flex-col gap-4">
+      {!isMovieDetailsOpen && (
+        <button
+          className="self-end px-4 py-2 rounded-md bg-red-600 text-white"
+          onClick={handleAddMovie}
+        >
+          Add movie
+        </button>
+      )}
       <Outlet context={{ onSearch: handleSearch, initialQuery: query }} />
       <div className="flex gap-4 justify-between">
         <GenreSelect

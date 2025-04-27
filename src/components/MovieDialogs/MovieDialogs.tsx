@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MovieForm, MovieFormData } from "../MovieForm/MovieForm";
 import { Dialog } from "../shared/Dialog/Dialog.tsx";
-import { useOutletContext } from "react-router-dom";
+import {useNavigate, useOutletContext, useSearchParams} from "react-router-dom";
 
 interface MovieDialogContext {
   isOpen: boolean;
@@ -11,10 +11,45 @@ interface MovieDialogContext {
 }
 
 export const AddMovieDialog: React.FC = () => {
-  const { isOpen, onClose, onSubmit } = useOutletContext<MovieDialogContext>();
+  const [error, setError] = useState<null | string>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => setIsLoading(false), []);
+
+  const onClose = () => navigate(`/?${searchParams.toString()}`);
+
+  const onSubmit = async (data: MovieFormData) => {
+    try {
+      setIsLoading(true);
+
+      const resp = await fetch(`http://localhost:4000/movies`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (resp.ok) await onClose();
+      else setError(await resp.text());
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Add Movie">
-      <MovieForm onSubmit={onSubmit} />
+    <Dialog isOpen={true} onClose={onClose} title="Add Movie">
+      {error ? (
+        <p className="text-red-500">{error}</p>
+      ) : isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <MovieForm onSubmit={onSubmit} />
+      )}
     </Dialog>
   );
 };
