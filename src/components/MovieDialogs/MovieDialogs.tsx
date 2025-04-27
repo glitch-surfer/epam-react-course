@@ -1,19 +1,17 @@
 import React from "react";
 import { MovieForm, MovieFormData } from "../MovieForm/MovieForm";
 import { Dialog } from "../shared/Dialog/Dialog.tsx";
+import { useOutletContext } from "react-router-dom";
 
-interface MovieDialogProps {
+interface MovieDialogContext {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: MovieFormData) => void;
   initialData?: Partial<MovieFormData>;
 }
 
-export const AddMovieDialog: React.FC<MovieDialogProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-}) => {
+export const AddMovieDialog: React.FC = () => {
+  const { isOpen, onClose, onSubmit } = useOutletContext<MovieDialogContext>();
   return (
     <Dialog isOpen={isOpen} onClose={onClose} title="Add Movie">
       <MovieForm onSubmit={onSubmit} />
@@ -21,12 +19,9 @@ export const AddMovieDialog: React.FC<MovieDialogProps> = ({
   );
 };
 
-export const EditMovieDialog: React.FC<MovieDialogProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  initialData,
-}) => {
+export const EditMovieDialog: React.FC = () => {
+  const { isOpen, onClose, onSubmit, initialData } =
+    useOutletContext<MovieDialogContext>();
   return (
     <Dialog isOpen={isOpen} onClose={onClose} title="Edit Movie">
       <MovieForm initialData={initialData} onSubmit={onSubmit} />
@@ -34,13 +29,13 @@ export const EditMovieDialog: React.FC<MovieDialogProps> = ({
   );
 };
 
-interface DeleteMovieDialogProps extends MovieDialogProps {
+interface DeleteMovieDialogContext extends MovieDialogContext {
   movieTitle: string;
   onSubmit: () => void;
 }
 
 const DeleteMovieDialogContent: React.FC<
-  Omit<DeleteMovieDialogProps, "isOpen">
+  Omit<DeleteMovieDialogContext, "isOpen">
 > = ({ movieTitle, onClose, onSubmit }) => {
   return (
     <div className="space-y-4">
@@ -65,12 +60,9 @@ const DeleteMovieDialogContent: React.FC<
   );
 };
 
-export const DeleteMovieDialog: React.FC<DeleteMovieDialogProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  movieTitle,
-}) => {
+export const DeleteMovieDialog: React.FC = () => {
+  const { isOpen, onClose, onSubmit, movieTitle } =
+    useOutletContext<DeleteMovieDialogContext>();
   return (
     <Dialog isOpen={isOpen} onClose={onClose} title="Delete Movie">
       <DeleteMovieDialogContent
