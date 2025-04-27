@@ -9,6 +9,7 @@ import {
 import { Movie } from "./models/movie.interface.ts";
 import { MoviesResponse } from "./models/api.ts";
 import {
+  Link,
   Outlet,
   useLocation,
   useNavigate,
@@ -78,8 +79,6 @@ function App() {
   const setSelectedMovie = (movie: Movie) =>
     navigate(`/${movie.id.toString()}?${searchParams.toString()}`);
 
-  const handleAddMovie = () => navigate(`/new?${searchParams.toString()}`);
-
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -91,12 +90,12 @@ function App() {
   return (
     <div className="flex flex-col gap-4">
       {!isMovieDetailsOpen && (
-        <button
-          className="self-end px-4 py-2 rounded-md bg-red-600 text-white"
-          onClick={handleAddMovie}
+        <Link
+          className="self-end"
+          to={`/new?${searchParams.toString()}`}
         >
           Add movie
-        </button>
+        </Link>
       )}
       <Outlet context={{ onSearch: handleSearch, initialQuery: query }} />
       <div className="flex gap-4 justify-between">

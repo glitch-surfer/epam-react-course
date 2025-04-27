@@ -27,7 +27,7 @@ export const Dialog: React.FC<DialogProps> = ({
     if (isOpen) {
       document.addEventListener("keydown", handleEscape);
       document.body.style.overflow = "hidden";
-      setIsActive(true)
+      setIsActive(true);
     } else setIsActive(false);
 
     return () => {
@@ -51,7 +51,7 @@ export const Dialog: React.FC<DialogProps> = ({
           {/* Overlay */}
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={onClose}
+            onClick={() => onClose()}
             data-testid="dialog-overlay"
           />
 
@@ -63,7 +63,7 @@ export const Dialog: React.FC<DialogProps> = ({
                 <div className="text-xl font-semibold text-white">{title}</div>
                 <button
                   id="dialog-close-button"
-                  onClick={onClose}
+                  onClick={() => onClose()}
                   className="text-gray-400 hover:text-white transition-colors p-1"
                   aria-label="Close dialog"
                 >

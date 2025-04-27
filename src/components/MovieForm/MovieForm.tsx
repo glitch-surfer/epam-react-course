@@ -1,18 +1,9 @@
 import React from "react";
-
-export interface MovieFormData {
-  title: string;
-  releaseDate: string;
-  movieUrl: string;
-  rating: string;
-  genres: string[];
-  runtime: string;
-  overview?: string;
-}
+import { Movie } from "../../models/movie.interface.ts";
 
 interface MovieFormProps {
-  initialData?: Partial<MovieFormData>;
-  onSubmit: (data: MovieFormData) => void;
+  initialData?: Partial<Movie>;
+  onSubmit: (data: Movie) => void;
 }
 
 const GENRES = ["Crime", "Documentary", "Horror", "Comedy", "Action", "Drama"];
@@ -28,7 +19,11 @@ export const MovieForm: React.FC<MovieFormProps> = ({
     const data = {
       ...Object.fromEntries(formData),
       genres,
-    } as MovieFormData;
+      runtime: formData.get("runtime") ? Number(formData.get("runtime")) : 0,
+      vote_average: formData.get("vote_average")
+        ? Number(formData.get("vote_average"))
+        : 0,
+    } as Movie;
     onSubmit(data);
   };
 
@@ -49,7 +44,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             defaultValue={initialData?.title}
             placeholder="Title"
             required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
+            className="w-full bg-[#323232] border border-[#424242] rounded
                        text-white px-4 py-3 placeholder-gray-500
                        focus:outline-none focus:border-[#F65261]"
           />
@@ -57,18 +52,18 @@ export const MovieForm: React.FC<MovieFormProps> = ({
 
         <div>
           <label
-            htmlFor="releaseDate"
+            htmlFor="release_date"
             className="block text-[#F65261] uppercase text-xs font-medium mb-2"
           >
             Release Date
           </label>
           <input
             type="date"
-            id="releaseDate"
-            name="releaseDate"
-            defaultValue={initialData?.releaseDate}
+            id="release_date"
+            name="release_date"
+            defaultValue={initialData?.release_date}
             required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
+            className="w-full bg-[#323232] border border-[#424242] rounded
                        text-white px-4 py-3
                        focus:outline-none focus:border-[#F65261]"
           />
@@ -78,19 +73,19 @@ export const MovieForm: React.FC<MovieFormProps> = ({
       <div className="grid grid-cols-2 gap-6">
         <div>
           <label
-            htmlFor="movieUrl"
+            htmlFor="poster_path"
             className="block text-[#F65261] uppercase text-xs font-medium mb-2"
           >
             Movie URL
           </label>
           <input
             type="url"
-            id="movieUrl"
-            name="movieUrl"
-            defaultValue={initialData?.movieUrl}
+            id="poster_path"
+            name="poster_path"
+            defaultValue={initialData?.poster_path}
             placeholder="https://"
             required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
+            className="w-full bg-[#323232] border border-[#424242] rounded
                        text-white px-4 py-3 placeholder-gray-500
                        focus:outline-none focus:border-[#F65261]"
           />
@@ -98,22 +93,22 @@ export const MovieForm: React.FC<MovieFormProps> = ({
 
         <div>
           <label
-            htmlFor="rating"
+            htmlFor="vote_average"
             className="block text-[#F65261] uppercase text-xs font-medium mb-2"
           >
             Rating
           </label>
           <input
             type="number"
-            id="rating"
-            name="rating"
+            id="vote_average"
+            name="vote_average"
             min="0"
             max="10"
             step="0.1"
             placeholder="7.8"
-            defaultValue={initialData?.rating}
+            defaultValue={initialData?.vote_average}
             required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
+            className="w-full bg-[#323232] border border-[#424242] rounded
                        text-white px-4 py-3 placeholder-gray-500
                        focus:outline-none focus:border-[#F65261]"
           />
@@ -134,7 +129,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                     name="genres"
                     value={genre}
                     defaultChecked={initialData?.genres?.includes(genre)}
-                    className="rounded border-[#424242] bg-[#323232] 
+                    className="rounded border-[#424242] bg-[#323232]
                              text-[#F65261] focus:ring-[#F65261]"
                   />
                   <span className="text-white text-sm">{genre}</span>
@@ -152,13 +147,13 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             Runtime
           </label>
           <input
-            type="text"
+            type="number"
             id="runtime"
             name="runtime"
             placeholder="minutes"
             defaultValue={initialData?.runtime}
             required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
+            className="w-full bg-[#323232] border border-[#424242] rounded
                        text-white px-4 py-3 placeholder-gray-500
                        focus:outline-none focus:border-[#F65261]"
           />
@@ -177,7 +172,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           name="overview"
           rows={4}
           defaultValue={initialData?.overview}
-          className="w-full bg-[#323232] border border-[#424242] rounded 
+          className="w-full bg-[#323232] border border-[#424242] rounded
                        text-white px-4 py-3
                        focus:outline-none focus:border-[#F65261]"
         />
@@ -186,14 +181,14 @@ export const MovieForm: React.FC<MovieFormProps> = ({
       <div className="flex justify-end space-x-4 pt-4">
         <button
           type="reset"
-          className="px-8 py-3 rounded border border-[#F65261] text-[#F65261] 
+          className="px-8 py-3 rounded border border-[#F65261] text-[#F65261]
                      hover:bg-[#F65261] hover:bg-opacity-10 transition-colors"
         >
           Reset
         </button>
         <button
           type="submit"
-          className="px-8 py-3 rounded bg-[#F65261] text-white 
+          className="px-8 py-3 rounded bg-[#F65261] text-white
                      hover:bg-[#F65261]/90 transition-colors"
         >
           Submit

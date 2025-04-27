@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { MovieForm, MovieFormData } from "../MovieForm/MovieForm";
+import { MovieForm } from "../MovieForm/MovieForm";
 import { Dialog } from "../shared/Dialog/Dialog.tsx";
-import {useNavigate, useOutletContext, useSearchParams} from "react-router-dom";
+import {
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
+import { Movie } from "../../models/movie.interface.ts";
 
 interface MovieDialogContext {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: MovieFormData) => void;
-  initialData?: Partial<MovieFormData>;
+  onSubmit: (data: Movie) => void;
+  initialData?: Partial<Movie>;
 }
 
 export const AddMovieDialog: React.FC = () => {
@@ -18,9 +23,10 @@ export const AddMovieDialog: React.FC = () => {
 
   useEffect(() => setIsLoading(false), []);
 
-  const onClose = () => navigate(`/?${searchParams.toString()}`);
+  const onClose = (newMovieId = '') =>
+    navigate(`/${newMovieId}?${searchParams.toString()}`);
 
-  const onSubmit = async (data: MovieFormData) => {
+  const onSubmit = async (data: Movie) => {
     try {
       setIsLoading(true);
 
@@ -32,8 +38,9 @@ export const AddMovieDialog: React.FC = () => {
         body: JSON.stringify(data),
       });
 
-      if (resp.ok) await onClose();
-      else setError(await resp.text());
+      if (resp.ok) {
+        await onClose(((await resp.json()) as Movie).id.toString());
+      } else setError(await resp.text());
     } catch (err) {
       setError((err as Error).message);
     } finally {
