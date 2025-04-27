@@ -55,7 +55,7 @@ function App() {
       }
     };
 
-    fetchData();
+    fetchData().catch(console.error);
 
     return () => {
       if (abortControllerRef.current) {
