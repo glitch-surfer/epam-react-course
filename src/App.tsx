@@ -79,6 +79,8 @@ function App() {
   const setSelectedMovie = (movie: Movie) =>
     navigate(`/${movie.id.toString()}?${searchParams.toString()}`);
 
+  const handleEdit = (movie: Movie) => navigate(`/${movie.id.toString()}/edit`);
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -90,10 +92,7 @@ function App() {
   return (
     <div className="flex flex-col gap-4">
       {!isMovieDetailsOpen && (
-        <Link
-          className="self-end"
-          to={`/new?${searchParams.toString()}`}
-        >
+        <Link className="self-end" to={`/new?${searchParams.toString()}`}>
           Add movie
         </Link>
       )}
@@ -116,7 +115,7 @@ function App() {
               key={movie.id}
               movie={movie}
               onClick={(movie) => setSelectedMovie(movie)}
-              onEdit={(movie) => console.log("Edit:", movie)}
+              onEdit={(movie) => handleEdit(movie)}
               onDelete={(movie) => console.log("Delete:", movie)}
             />
           ))

@@ -23,7 +23,7 @@ export const AddMovieDialog: React.FC = () => {
 
   useEffect(() => setIsLoading(false), []);
 
-  const onClose = (newMovieId = '') =>
+  const onClose = (newMovieId = "") =>
     navigate(`/${newMovieId}?${searchParams.toString()}`);
 
   const onSubmit = async (data: Movie) => {
@@ -62,11 +62,54 @@ export const AddMovieDialog: React.FC = () => {
 };
 
 export const EditMovieDialog: React.FC = () => {
-  const { isOpen, onClose, onSubmit, initialData } =
-    useOutletContext<MovieDialogContext>();
+  const { initialData } =
+    useOutletContext<Pick<MovieDialogContext, "initialData">>();
+  const [error, setError] = useState<null | string>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => setIsLoading(false), []);
+
+  const onClose = (newMovieId: string) =>
+    navigate(`/${newMovieId}?${searchParams.toString()}`);
+
+  const onSubmit = async (data: Movie) => {
+    try {
+      setIsLoading(true);
+
+      const resp = await fetch(`http://localhost:4000/movies`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (resp.ok) {
+        const movie = (await resp.json()) as Movie;
+        await onClose(movie.id.toString());
+      } else setError(await resp.text());
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Edit Movie">
-      <MovieForm initialData={initialData} onSubmit={onSubmit} />
+    <Dialog
+      isOpen={true}
+      onClose={() => onClose(initialData?.id?.toString() ?? "")}
+      title="Edit Movie"
+    >
+      {error ? (
+        <p className="text-red-500">{error}</p>
+      ) : isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <MovieForm initialData={initialData} onSubmit={onSubmit} />
+      )}
     </Dialog>
   );
 };

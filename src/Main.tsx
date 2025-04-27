@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SearchForm } from "./components/SearchForm/SearchForm.tsx";
 import { MovieDetails } from "./components/MovieDetails/MovieDetails.tsx";
 import { Movie } from "./models/movie.interface.ts";
-import {AddMovieDialog} from "./components/MovieDialogs/MovieDialogs.tsx";
+import {AddMovieDialog, EditMovieDialog} from "./components/MovieDialogs/MovieDialogs.tsx";
 
 async function movieLoader({ params }) {
   const response = await fetch(
@@ -36,6 +36,12 @@ const router = createBrowserRouter([
         path: "/:movieId",
         element: <MovieDetails />,
         loader: movieLoader,
+        children: [
+          {
+            path: "/:movieId/edit",
+            element: <EditMovieDialog />,
+          }
+        ]
       },
     ],
   },
