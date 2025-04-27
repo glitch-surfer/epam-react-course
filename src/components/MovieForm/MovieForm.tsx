@@ -1,4 +1,5 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import { Movie } from "../../models/movie.interface.ts";
 
 interface MovieFormProps {
@@ -12,23 +13,35 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   initialData,
   onSubmit,
 }) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const genres = formData.getAll("genres") as string[];
-    const data = {
-      ...Object.fromEntries(formData),
-      genres,
-      runtime: formData.get("runtime") ? Number(formData.get("runtime")) : 0,
-      vote_average: formData.get("vote_average")
-        ? Number(formData.get("vote_average"))
-        : 0,
-    } as Movie;
-    onSubmit(data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      title: initialData?.title ?? "",
+      release_date: initialData?.release_date ?? "",
+      poster_path: initialData?.poster_path ?? "",
+      vote_average: initialData?.vote_average ?? "",
+      genres: initialData?.genres ?? [],
+      runtime: initialData?.runtime ?? "",
+      overview: initialData?.overview ?? "",
+    },
+  });
+
+  const onSubmitHandler = (data: any) => {
+    const transformedData: Movie = {
+      ...data,
+      genres: Array.isArray(data.genres) ? data.genres : [data.genres],
+      runtime: data.runtime ? Number(data.runtime) : 0,
+      vote_average: data.vote_average ? Number(data.vote_average) : 0,
+    };
+    onSubmit(transformedData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-4">
       <div className="grid grid-cols-2 gap-6">
         <div>
           <label
@@ -40,14 +53,15 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           <input
             type="text"
             id="title"
-            name="title"
-            defaultValue={initialData?.title}
             placeholder="Title"
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("title", { required: "Title is required" })}
+            className={`w-full bg-[#323232] border ${
+              errors.title ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          {errors.title && (
+            <p className="text-red-500 text-sm">{errors.title.message}</p>
+          )}
         </div>
 
         <div>
@@ -60,13 +74,18 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           <input
             type="date"
             id="release_date"
-            name="release_date"
-            defaultValue={initialData?.release_date}
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded
-                       text-white px-4 py-3
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("release_date", {
+              required: "Release date is required",
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.release_date ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 focus:outline-none focus:border-[#F65261]`}
           />
+          {errors.release_date && (
+            <p className="text-red-500 text-sm">
+              {errors.release_date.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -81,14 +100,21 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           <input
             type="url"
             id="poster_path"
-            name="poster_path"
-            defaultValue={initialData?.poster_path}
             placeholder="https://"
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("poster_path", {
+              required: "Movie URL is required",
+              pattern: {
+                value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
+                message: "Invalid URL format",
+              },
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.poster_path ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          {errors.poster_path && (
+            <p className="text-red-500 text-sm">{errors.poster_path.message}</p>
+          )}
         </div>
 
         <div>
@@ -101,17 +127,24 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           <input
             type="number"
             id="vote_average"
-            name="vote_average"
+            placeholder="7.8"
             min="0"
             max="10"
             step="0.1"
-            placeholder="7.8"
-            defaultValue={initialData?.vote_average}
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("vote_average", {
+              required: "Rating is required",
+              min: { value: 0, message: "Rating must be at least 0" },
+              max: { value: 10, message: "Rating cannot exceed 10" },
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.vote_average ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          {errors.vote_average && (
+            <p className="text-red-500 text-sm">
+              {errors.vote_average.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -126,11 +159,9 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 <label key={genre} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    name="genres"
                     value={genre}
-                    defaultChecked={initialData?.genres?.includes(genre)}
-                    className="rounded border-[#424242] bg-[#323232]
-                             text-[#F65261] focus:ring-[#F65261]"
+                    {...register("genres")}
+                    className="rounded border-[#424242] bg-[#323232] text-[#F65261] focus:ring-[#F65261]"
                   />
                   <span className="text-white text-sm">{genre}</span>
                 </label>
@@ -149,14 +180,18 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           <input
             type="number"
             id="runtime"
-            name="runtime"
             placeholder="minutes"
-            defaultValue={initialData?.runtime}
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("runtime", {
+              required: "Runtime is required",
+              min: { value: 0, message: "Runtime must be at least 0" },
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.runtime ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          {errors.runtime && (
+            <p className="text-red-500 text-sm">{errors.runtime.message}</p>
+          )}
         </div>
       </div>
 
@@ -169,27 +204,28 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         </label>
         <textarea
           id="overview"
-          name="overview"
           rows={4}
-          defaultValue={initialData?.overview}
-          className="w-full bg-[#323232] border border-[#424242] rounded
-                       text-white px-4 py-3
-                       focus:outline-none focus:border-[#F65261]"
+          {...register("overview", { required: "Overview is required" })}
+          className={`w-full bg-[#323232] border ${
+            errors.overview ? "border-red-500" : "border-[#424242]"
+          } rounded text-white px-4 py-3 focus:outline-none focus:border-[#F65261]`}
         />
+        {errors.overview && (
+          <p className="text-red-500 text-sm">{errors.overview.message}</p>
+        )}
       </div>
 
       <div className="flex justify-end space-x-4 pt-4">
         <button
-          type="reset"
-          className="px-8 py-3 rounded border border-[#F65261] text-[#F65261]
-                     hover:bg-[#F65261] hover:bg-opacity-10 transition-colors"
+          type="button"
+          onClick={() => reset()}
+          className="px-8 py-3 rounded border border-[#F65261] text-[#F65261] hover:bg-[#F65261] hover:bg-opacity-10 transition-colors"
         >
           Reset
         </button>
         <button
           type="submit"
-          className="px-8 py-3 rounded bg-[#F65261] text-white
-                     hover:bg-[#F65261]/90 transition-colors"
+          className="px-8 py-3 rounded bg-[#F65261] text-white hover:bg-[#F65261]/90 transition-colors"
         >
           Submit
         </button>
