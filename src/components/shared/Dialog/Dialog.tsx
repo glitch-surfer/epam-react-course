@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FocusTrap } from "focus-trap-react";
 import { Portal } from "react-portal";
 
@@ -15,6 +15,8 @@ export const Dialog: React.FC<DialogProps> = ({
   onClose,
   isOpen,
 }) => {
+  const [isActive, setIsActive] = useState(false);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -25,7 +27,8 @@ export const Dialog: React.FC<DialogProps> = ({
     if (isOpen) {
       document.addEventListener("keydown", handleEscape);
       document.body.style.overflow = "hidden";
-    }
+      setIsActive(true)
+    } else setIsActive(false);
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
@@ -38,6 +41,7 @@ export const Dialog: React.FC<DialogProps> = ({
   return (
     <Portal>
       <FocusTrap
+        active={isActive}
         focusTrapOptions={{
           initialFocus: false,
           fallbackFocus: "#dialog-close-button",
