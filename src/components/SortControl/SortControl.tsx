@@ -1,6 +1,9 @@
 import React from "react";
 
-export type SortOption = "release_date" | "title";
+export enum SortOption {
+    ReleaseDate = "release_date",
+    Title = "title",
+}
 
 interface SortControlProps {
   currentSort: SortOption;
