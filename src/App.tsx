@@ -28,16 +28,20 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
+        abortControllerRef.current.abort("New request started");
       }
+
       const abortController = new AbortController();
+      abortControllerRef.current = abortController;
 
       try {
+        setLoading(true);
+
         const filter =
           selectedGenre === "ALL" ? "" : selectedGenre.toLowerCase();
 
         const response = await fetch(
-          `http://localhost:4000/movies?search=${query}&filter=${filter}&searchBy=title&sortBy=${sort}&sortOrder=desc`,
+          `http://localhost:4000/movies?search=${query}&filter=${filter}&searchBy=title&sortBy=${sort}&sortOrder=asc`,
           { signal: abortController.signal },
         );
         if (!response.ok) {
@@ -50,11 +54,15 @@ function App() {
       } finally {
         setLoading(false);
       }
-
-      abortControllerRef.current = abortController;
     };
 
-    fetchData();
+    fetchData().catch(console.error);
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort("Component unmounted");
+      }
+    };
   }, [query, selectedGenre, sort]);
 
   const handleSearch = (newQuery: string) => {
