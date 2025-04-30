@@ -18,7 +18,7 @@ function App() {
   const navigate = useNavigate();
 
   const query = searchParams.get("query") ?? "Star Wars";
-  const selectedGenre = searchParams.get("genre") ?? genres[0];
+  const selectedGenre = searchParams.get("genre")?.toUpperCase() ?? genres[0]
   const sort = searchParams.get("sort") ?? SortOption.ReleaseDate;
 
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -38,7 +38,7 @@ function App() {
         setLoading(true);
 
         const filter =
-          selectedGenre === "ALL" ? "" : selectedGenre.toLowerCase();
+          selectedGenre === "ALL" ? "" : selectedGenre;
 
         const response = await fetch(
           `http://localhost:4000/movies?search=${query}&filter=${filter}&searchBy=title&sortBy=${sort}&sortOrder=asc`,
