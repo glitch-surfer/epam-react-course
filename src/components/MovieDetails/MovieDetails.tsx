@@ -1,19 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "../shared/Image.tsx";
 import { Genres } from "../shared/Genres.tsx";
 import { Movie } from "../../models/movie.interface.ts";
-import { useLoaderData, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 export const MovieDetails: React.FC = () => {
-  const { movie } = useLoaderData<{ movie: Movie }>();
+  const [movie, setMovie] = useState(useLoaderData<{ movie: Movie }>().movie);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.movie) setMovie(location.state.movie as Movie);
+  }, [location]);
 
   const onClose = () => navigate(`/?${searchParams.toString()}`);
 
   return (
     <div className="flex flex-col md:flex-row bg-[#232323] text-white min-h-[500px]">
       {/* Left side - Image */}
+      <Outlet context={{ initialData: movie }} />
       <div className="md:w-1/3 lg:w-1/4">
         <div className="relative aspect-[2/3] w-full">
           <Image src={movie.poster_path} alt={movie.title} />

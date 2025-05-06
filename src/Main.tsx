@@ -11,6 +11,7 @@ import {
 import { SearchForm } from "./components/SearchForm/SearchForm.tsx";
 import { MovieDetails } from "./components/MovieDetails/MovieDetails.tsx";
 import { Movie } from "./models/movie.interface.ts";
+import {AddMovieDialog, EditMovieDialog} from "./components/MovieDialogs/MovieDialogs.tsx";
 
 const movieLoader: LoaderFunction<{ params: Params }> = async ({ params }) => {
   const response = await fetch(
@@ -29,11 +30,23 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <SearchForm />,
+        children: [
+          {
+            path: "/new",
+            element: <AddMovieDialog />,
+          }
+        ]
       },
       {
         path: "/:movieId",
         element: <MovieDetails />,
         loader: movieLoader,
+        children: [
+          {
+            path: "/:movieId/edit",
+            element: <EditMovieDialog />,
+          }
+        ]
       },
     ],
   },

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 
 export interface SearchFormContext {
   initialQuery?: string;
@@ -37,6 +37,7 @@ export const SearchForm: React.FC = () => {
       >
         SEARCH
       </button>
+      <Outlet />
     </form>
   );
 };
