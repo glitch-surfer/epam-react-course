@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "../shared/Image.tsx";
 import { Genres } from "../shared/Genres.tsx";
 import { Movie } from "../../models/movie.interface.ts";
 import {
   Outlet,
   useLoaderData,
+  useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
 
 export const MovieDetails: React.FC = () => {
-  const { movie } = useLoaderData<{ movie: Movie }>();
+  const [movie, setMovie] = useState(useLoaderData<{ movie: Movie }>().movie);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.movie) setMovie(location.state.movie as Movie);
+  }, [location]);
 
   const onClose = () => navigate(`/?${searchParams.toString()}`);
 

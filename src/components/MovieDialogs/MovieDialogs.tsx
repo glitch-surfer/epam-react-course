@@ -71,8 +71,10 @@ export const EditMovieDialog: React.FC = () => {
 
   useEffect(() => setIsLoading(false), []);
 
-  const onClose = (newMovieId: string) =>
-    navigate(`/${newMovieId}?${searchParams.toString()}`);
+  const onClose = (newMovie: Movie) =>
+    navigate(`/${newMovie.id.toString()}?${searchParams.toString()}`, {
+      state: { movie: newMovie },
+    });
 
   const onSubmit = async (data: Movie) => {
     try {
@@ -88,7 +90,7 @@ export const EditMovieDialog: React.FC = () => {
 
       if (resp.ok) {
         const movie = (await resp.json()) as Movie;
-        await onClose(movie.id.toString());
+        await onClose(movie);
       } else setError(await resp.text());
     } catch (err) {
       setError((err as Error).message);
@@ -100,7 +102,7 @@ export const EditMovieDialog: React.FC = () => {
   return (
     <Dialog
       isOpen={true}
-      onClose={() => onClose(initialData?.id?.toString() ?? "")}
+      onClose={() => onClose(initialData as Movie)}
       title="Edit Movie"
     >
       {error ? (
