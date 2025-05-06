@@ -36,7 +36,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
       genres: Array.isArray(data.genres) ? data.genres : [data.genres],
       runtime: data.runtime ? Number(data.runtime) : 0,
       vote_average: data.vote_average ? Number(data.vote_average) : 0,
-      id: initialData?.id ?? null,
+      ...(initialData?.id ? { id: initialData.id } : null),
     };
     onSubmit(transformedData);
   };
