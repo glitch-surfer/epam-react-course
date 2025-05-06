@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Movie } from "../../models/movie.interface.ts";
+import {InputError} from "../shared/InputError.tsx";
 
 interface MovieFormProps {
   initialData?: Partial<Movie>;
@@ -59,10 +60,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             className={`w-full bg-[#323232] border ${
               errors.title ? "border-red-500" : "border-[#424242]"
             } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm">{errors.title.message}</p>
-          )}
+          />x
+          <InputError message={errors.title?.message} />
         </div>
 
         <div>
@@ -82,11 +81,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               errors.release_date ? "border-red-500" : "border-[#424242]"
             } rounded text-white px-4 py-3 focus:outline-none focus:border-[#F65261]`}
           />
-          {errors.release_date && (
-            <p className="text-red-500 text-sm">
-              {errors.release_date.message}
-            </p>
-          )}
+          <InputError message={errors.release_date?.message} />
         </div>
       </div>
 
@@ -113,9 +108,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               errors.poster_path ? "border-red-500" : "border-[#424242]"
             } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
-          {errors.poster_path && (
-            <p className="text-red-500 text-sm">{errors.poster_path.message}</p>
-          )}
+          <InputError message={errors.poster_path?.message} />
         </div>
 
         <div>
@@ -141,11 +134,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               errors.vote_average ? "border-red-500" : "border-[#424242]"
             } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
-          {errors.vote_average && (
-            <p className="text-red-500 text-sm">
-              {errors.vote_average.message}
-            </p>
-          )}
+          <InputError message={errors.vote_average?.message} />
         </div>
       </div>
 
@@ -190,9 +179,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               errors.runtime ? "border-red-500" : "border-[#424242]"
             } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
-          {errors.runtime && (
-            <p className="text-red-500 text-sm">{errors.runtime.message}</p>
-          )}
+          <InputError message={errors.runtime?.message} />
         </div>
       </div>
 
@@ -211,9 +198,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             errors.overview ? "border-red-500" : "border-[#424242]"
           } rounded text-white px-4 py-3 focus:outline-none focus:border-[#F65261]`}
         />
-        {errors.overview && (
-          <p className="text-red-500 text-sm">{errors.overview.message}</p>
-        )}
+        <InputError message={errors.overview?.message} />
       </div>
 
       <div className="flex justify-end space-x-4 pt-4">
