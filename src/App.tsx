@@ -1,5 +1,4 @@
 import "./App.css";
-import { SearchForm } from "./components/SearchForm/SearchForm.tsx";
 import { GenreSelect } from "./components/GenreSelect/GenreSelect.tsx";
 import { MovieTile } from "./components/MovieTile/MovieTile.tsx";
 import { useEffect, useRef, useState } from "react";
@@ -8,17 +7,26 @@ import {
   SortOption,
 } from "./components/SortControl/SortControl.tsx";
 import { Movie } from "./models/movie.interface.ts";
-import { MovieDetails } from "./components/MovieDetails/MovieDetails.tsx";
 import { MoviesResponse } from "./models/api.ts";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 const genres = ["ALL", "DOCUMENTARY", "COMEDY", "HORROR", "CRIME"];
 
 function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState(genres[0]);
-  const [sort, setSort] = useState(SortOption.ReleaseDate);
-  const [query, setQuery] = useState("Star Wars");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const query = searchParams.get("query") ?? "Star Wars";
+  const selectedGenre = searchParams.get("genre") ?? genres[0];
+  const sort = searchParams.get("sort") ?? SortOption.ReleaseDate;
+  const isMovieDetailsOpen = useLocation().pathname !== "/";
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,6 +72,23 @@ function App() {
     };
   }, [query, selectedGenre, sort]);
 
+  const handleSearch = (newQuery: string) => {
+    setSearchParams({ query: newQuery, genre: selectedGenre, sort });
+  };
+
+  const handleGenreChange = (newGenre: string) => {
+    setSearchParams({ query, genre: newGenre, sort });
+  };
+
+  const handleSortChange = (newSort: SortOption) => {
+    setSearchParams({ query, genre: selectedGenre, sort: newSort });
+  };
+
+  const setSelectedMovie = (movie: Movie) =>
+    navigate(`/${movie.id.toString()}?${searchParams.toString()}`);
+
+  const handleEdit = (movie: Movie) => navigate(`/${movie.id.toString()}/edit`);
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -74,21 +99,22 @@ function App() {
 
   return (
     <div className="flex flex-col gap-4">
-      {selectedMovie ? (
-        <MovieDetails
-          movie={selectedMovie}
-          onClose={() => setSelectedMovie(null)}
-        />
-      ) : (
-        <SearchForm onSearch={setQuery} initialQuery={query} />
+      {!isMovieDetailsOpen && (
+        <Link className="self-end" to={`/new?${searchParams.toString()}`}>
+          Add movie
+        </Link>
       )}
+      <Outlet context={{ onSearch: handleSearch, initialQuery: query }} />
       <div className="flex gap-4 justify-between">
         <GenreSelect
           genres={genres}
-          onSelect={setSelectedGenre}
+          onSelect={handleGenreChange}
           selectedGenre={selectedGenre}
         />
-        <SortControl currentSort={sort} onSortChange={setSort} />
+        <SortControl
+          currentSort={sort as SortOption}
+          onSortChange={handleSortChange}
+        />
       </div>
       <div className="flex flex-wrap gap-4 grow">
         {movies.length ? (
@@ -97,7 +123,7 @@ function App() {
               key={movie.id}
               movie={movie}
               onClick={(movie) => setSelectedMovie(movie)}
-              onEdit={(movie) => console.log("Edit:", movie)}
+              onEdit={(movie) => handleEdit(movie)}
               onDelete={(movie) => console.log("Delete:", movie)}
             />
           ))

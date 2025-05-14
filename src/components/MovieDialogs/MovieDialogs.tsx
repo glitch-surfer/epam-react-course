@@ -1,46 +1,128 @@
-import React from "react";
-import { MovieForm, MovieFormData } from "../MovieForm/MovieForm";
+import React, { useEffect, useState } from "react";
+import { MovieForm } from "../MovieForm/MovieForm";
 import { Dialog } from "../shared/Dialog/Dialog.tsx";
+import {
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
+import { Movie } from "../../models/movie.interface.ts";
 
-interface MovieDialogProps {
+interface MovieDialogContext {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: MovieFormData) => void;
-  initialData?: Partial<MovieFormData>;
+  onSubmit: (data: Movie) => void;
+  initialData?: Partial<Movie>;
 }
 
-export const AddMovieDialog: React.FC<MovieDialogProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-}) => {
+export const AddMovieDialog: React.FC = () => {
+  const [error, setError] = useState<null | string>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => setIsLoading(false), []);
+
+  const onClose = (newMovieId = "") =>
+    navigate(`/${newMovieId}?${searchParams.toString()}`);
+
+  const onSubmit = async (data: Partial<Movie>) => {
+    try {
+      setIsLoading(true);
+
+      const resp = await fetch(`http://localhost:4000/movies`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (resp.ok) {
+        await onClose(((await resp.json()) as Movie).id.toString());
+      } else setError(await resp.text());
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Add Movie">
-      <MovieForm onSubmit={onSubmit} />
+    <Dialog isOpen={true} onClose={onClose} title="Add Movie">
+      {error ? (
+        <p className="text-red-500">{error}</p>
+      ) : isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <MovieForm onSubmit={onSubmit} />
+      )}
     </Dialog>
   );
 };
 
-export const EditMovieDialog: React.FC<MovieDialogProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  initialData,
-}) => {
+export const EditMovieDialog: React.FC = () => {
+  const { initialData } =
+    useOutletContext<Pick<MovieDialogContext, "initialData">>();
+  const [error, setError] = useState<null | string>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => setIsLoading(false), []);
+
+  const onClose = (newMovie: Movie) =>
+    navigate(`/${newMovie.id.toString()}?${searchParams.toString()}`, {
+      state: { movie: newMovie },
+    });
+
+  const onSubmit = async (data: Partial<Movie>) => {
+    try {
+      setIsLoading(true);
+
+      const resp = await fetch(`http://localhost:4000/movies`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (resp.ok) {
+        const movie = (await resp.json()) as Movie;
+        await onClose(movie);
+      } else setError(await resp.text());
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Edit Movie">
-      <MovieForm initialData={initialData} onSubmit={onSubmit} />
+    <Dialog
+      isOpen={true}
+      onClose={() => onClose(initialData as Movie)}
+      title="Edit Movie"
+    >
+      {error ? (
+        <p className="text-red-500">{error}</p>
+      ) : isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <MovieForm initialData={initialData} onSubmit={onSubmit} />
+      )}
     </Dialog>
   );
 };
 
-interface DeleteMovieDialogProps extends MovieDialogProps {
+interface DeleteMovieDialogContext extends MovieDialogContext {
   movieTitle: string;
   onSubmit: () => void;
 }
 
 const DeleteMovieDialogContent: React.FC<
-  Omit<DeleteMovieDialogProps, "isOpen">
+  Omit<DeleteMovieDialogContext, "isOpen">
 > = ({ movieTitle, onClose, onSubmit }) => {
   return (
     <div className="space-y-4">
@@ -65,12 +147,9 @@ const DeleteMovieDialogContent: React.FC<
   );
 };
 
-export const DeleteMovieDialog: React.FC<DeleteMovieDialogProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  movieTitle,
-}) => {
+export const DeleteMovieDialog: React.FC = () => {
+  const { isOpen, onClose, onSubmit, movieTitle } =
+    useOutletContext<DeleteMovieDialogContext>();
   return (
     <Dialog isOpen={isOpen} onClose={onClose} title="Delete Movie">
       <DeleteMovieDialogContent

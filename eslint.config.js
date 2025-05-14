@@ -52,6 +52,7 @@ export default tseslint.config(
       "react/no-unescaped-entities": "off",
       "@typescript-eslint/consistent-type-definitions": "off",
       "react-dom/no-missing-button-type": "off",
+      "@typescript-eslint/no-misused-promises": "off",
     },
     settings: { react: { version: "19.0" } },
   },

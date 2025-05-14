@@ -1,39 +1,59 @@
 import React from "react";
-
-export interface MovieFormData {
-  title: string;
-  releaseDate: string;
-  movieUrl: string;
-  rating: string;
-  genres: string[];
-  runtime: string;
-  overview?: string;
-}
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Movie } from "../../models/movie.interface.ts";
+import { InputError } from "../shared/InputError.tsx";
 
 interface MovieFormProps {
-  initialData?: Partial<MovieFormData>;
-  onSubmit: (data: MovieFormData) => void;
+  initialData?: Partial<Movie>;
+  onSubmit: (data: Partial<Movie>) => void;
 }
 
 const GENRES = ["Crime", "Documentary", "Horror", "Comedy", "Action", "Drama"];
+
+type MovieFormValues = {
+  title: string;
+  release_date: string;
+  poster_path: string;
+  vote_average: string | number;
+  genres: string[] | string;
+  runtime: string | number;
+  overview: string;
+};
 
 export const MovieForm: React.FC<MovieFormProps> = ({
   initialData,
   onSubmit,
 }) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const genres = formData.getAll("genres") as string[];
-    const data = {
-      ...Object.fromEntries(formData),
-      genres,
-    } as MovieFormData;
-    onSubmit(data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<MovieFormValues>({
+    defaultValues: {
+      title: initialData?.title ?? "",
+      release_date: initialData?.release_date ?? "",
+      poster_path: initialData?.poster_path ?? "",
+      vote_average: initialData?.vote_average ?? "",
+      genres: initialData?.genres ?? [],
+      runtime: initialData?.runtime ?? "",
+      overview: initialData?.overview ?? "",
+    },
+  });
+
+  const onSubmitHandler: SubmitHandler<MovieFormValues> = (data) => {
+    const transformedData: Partial<Movie> = {
+      ...data,
+      genres: Array.isArray(data.genres) ? data.genres : [data.genres],
+      runtime: data.runtime ? Number(data.runtime) : 0,
+      vote_average: data.vote_average ? Number(data.vote_average) : 0,
+      ...(initialData?.id ? { id: initialData.id } : {}),
+    };
+    onSubmit(transformedData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-4">
       <div className="grid grid-cols-2 gap-6">
         <div>
           <label
@@ -45,78 +65,87 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           <input
             type="text"
             id="title"
-            name="title"
-            defaultValue={initialData?.title}
             placeholder="Title"
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("title", { required: "Title is required" })}
+            className={`w-full bg-[#323232] border ${
+              errors.title ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          x
+          <InputError message={errors.title?.message} />
         </div>
 
         <div>
           <label
-            htmlFor="releaseDate"
+            htmlFor="release_date"
             className="block text-[#F65261] uppercase text-xs font-medium mb-2"
           >
             Release Date
           </label>
           <input
             type="date"
-            id="releaseDate"
-            name="releaseDate"
-            defaultValue={initialData?.releaseDate}
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
-                       text-white px-4 py-3
-                       focus:outline-none focus:border-[#F65261]"
+            id="release_date"
+            {...register("release_date", {
+              required: "Release date is required",
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.release_date ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 focus:outline-none focus:border-[#F65261]`}
           />
+          <InputError message={errors.release_date?.message} />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6">
         <div>
           <label
-            htmlFor="movieUrl"
+            htmlFor="poster_path"
             className="block text-[#F65261] uppercase text-xs font-medium mb-2"
           >
             Movie URL
           </label>
           <input
             type="url"
-            id="movieUrl"
-            name="movieUrl"
-            defaultValue={initialData?.movieUrl}
+            id="poster_path"
             placeholder="https://"
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("poster_path", {
+              required: "Movie URL is required",
+              pattern: {
+                value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
+                message: "Invalid URL format",
+              },
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.poster_path ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          <InputError message={errors.poster_path?.message} />
         </div>
 
         <div>
           <label
-            htmlFor="rating"
+            htmlFor="vote_average"
             className="block text-[#F65261] uppercase text-xs font-medium mb-2"
           >
             Rating
           </label>
           <input
             type="number"
-            id="rating"
-            name="rating"
+            id="vote_average"
+            placeholder="7.8"
             min="0"
             max="10"
             step="0.1"
-            placeholder="7.8"
-            defaultValue={initialData?.rating}
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("vote_average", {
+              required: "Rating is required",
+              min: { value: 0, message: "Rating must be at least 0" },
+              max: { value: 10, message: "Rating cannot exceed 10" },
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.vote_average ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          <InputError message={errors.vote_average?.message} />
         </div>
       </div>
 
@@ -131,11 +160,9 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 <label key={genre} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    name="genres"
                     value={genre}
-                    defaultChecked={initialData?.genres?.includes(genre)}
-                    className="rounded border-[#424242] bg-[#323232] 
-                             text-[#F65261] focus:ring-[#F65261]"
+                    {...register("genres")}
+                    className="rounded border-[#424242] bg-[#323232] text-[#F65261] focus:ring-[#F65261]"
                   />
                   <span className="text-white text-sm">{genre}</span>
                 </label>
@@ -152,16 +179,18 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             Runtime
           </label>
           <input
-            type="text"
+            type="number"
             id="runtime"
-            name="runtime"
             placeholder="minutes"
-            defaultValue={initialData?.runtime}
-            required
-            className="w-full bg-[#323232] border border-[#424242] rounded 
-                       text-white px-4 py-3 placeholder-gray-500
-                       focus:outline-none focus:border-[#F65261]"
+            {...register("runtime", {
+              required: "Runtime is required",
+              min: { value: 0, message: "Runtime must be at least 0" },
+            })}
+            className={`w-full bg-[#323232] border ${
+              errors.runtime ? "border-red-500" : "border-[#424242]"
+            } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
           />
+          <InputError message={errors.runtime?.message} />
         </div>
       </div>
 
@@ -174,27 +203,26 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         </label>
         <textarea
           id="overview"
-          name="overview"
           rows={4}
-          defaultValue={initialData?.overview}
-          className="w-full bg-[#323232] border border-[#424242] rounded 
-                       text-white px-4 py-3
-                       focus:outline-none focus:border-[#F65261]"
+          {...register("overview", { required: "Overview is required" })}
+          className={`w-full bg-[#323232] border ${
+            errors.overview ? "border-red-500" : "border-[#424242]"
+          } rounded text-white px-4 py-3 focus:outline-none focus:border-[#F65261]`}
         />
+        <InputError message={errors.overview?.message} />
       </div>
 
       <div className="flex justify-end space-x-4 pt-4">
         <button
-          type="reset"
-          className="px-8 py-3 rounded border border-[#F65261] text-[#F65261] 
-                     hover:bg-[#F65261] hover:bg-opacity-10 transition-colors"
+          type="button"
+          onClick={() => reset()}
+          className="px-8 py-3 rounded border border-[#F65261] text-[#F65261] hover:bg-[#F65261] hover:bg-opacity-10 transition-colors"
         >
           Reset
         </button>
         <button
           type="submit"
-          className="px-8 py-3 rounded bg-[#F65261] text-white 
-                     hover:bg-[#F65261]/90 transition-colors"
+          className="px-8 py-3 rounded bg-[#F65261] text-white hover:bg-[#F65261]/90 transition-colors"
         >
           Submit
         </button>
