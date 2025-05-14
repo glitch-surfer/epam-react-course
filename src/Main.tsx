@@ -8,9 +8,9 @@ import { MovieDetails } from "./components/MovieDetails/MovieDetails.tsx";
 import { Movie } from "./models/movie.interface.ts";
 import {AddMovieDialog, EditMovieDialog} from "./components/MovieDialogs/MovieDialogs.tsx";
 
-async function movieLoader({ params }) {
+async function movieLoader({ params }: { params: { movieId: string } }) {
   const response = await fetch(
-    `http://localhost:4000/movies/${params.movieId}`,
+      `http://localhost:4000/movies/${params.movieId}`,
   );
   const movie = (await response.json()) as Movie;
 

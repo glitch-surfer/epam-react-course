@@ -1,14 +1,24 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Movie } from "../../models/movie.interface.ts";
-import {InputError} from "../shared/InputError.tsx";
+import { InputError } from "../shared/InputError.tsx";
 
 interface MovieFormProps {
   initialData?: Partial<Movie>;
-  onSubmit: (data: Movie) => void;
+  onSubmit: (data: Partial<Movie>) => void;
 }
 
 const GENRES = ["Crime", "Documentary", "Horror", "Comedy", "Action", "Drama"];
+
+type MovieFormValues = {
+  title: string;
+  release_date: string;
+  poster_path: string;
+  vote_average: string | number;
+  genres: string[] | string;
+  runtime: string | number;
+  overview: string;
+};
 
 export const MovieForm: React.FC<MovieFormProps> = ({
   initialData,
@@ -19,7 +29,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
+  } = useForm<MovieFormValues>({
     defaultValues: {
       title: initialData?.title ?? "",
       release_date: initialData?.release_date ?? "",
@@ -31,13 +41,13 @@ export const MovieForm: React.FC<MovieFormProps> = ({
     },
   });
 
-  const onSubmitHandler = (data: any) => {
-    const transformedData: Movie = {
+  const onSubmitHandler: SubmitHandler<MovieFormValues> = (data) => {
+    const transformedData: Partial<Movie> = {
       ...data,
       genres: Array.isArray(data.genres) ? data.genres : [data.genres],
       runtime: data.runtime ? Number(data.runtime) : 0,
       vote_average: data.vote_average ? Number(data.vote_average) : 0,
-      ...(initialData?.id ? { id: initialData.id } : null),
+      ...(initialData?.id ? { id: initialData.id } : {}),
     };
     onSubmit(transformedData);
   };
@@ -60,7 +70,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             className={`w-full bg-[#323232] border ${
               errors.title ? "border-red-500" : "border-[#424242]"
             } rounded text-white px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#F65261]`}
-          />x
+          />
+          x
           <InputError message={errors.title?.message} />
         </div>
 

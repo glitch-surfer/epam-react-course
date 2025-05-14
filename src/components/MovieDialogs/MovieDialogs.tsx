@@ -26,7 +26,7 @@ export const AddMovieDialog: React.FC = () => {
   const onClose = (newMovieId = "") =>
     navigate(`/${newMovieId}?${searchParams.toString()}`);
 
-  const onSubmit = async (data: Movie) => {
+  const onSubmit = async (data: Partial<Movie>) => {
     try {
       setIsLoading(true);
 
@@ -76,7 +76,7 @@ export const EditMovieDialog: React.FC = () => {
       state: { movie: newMovie },
     });
 
-  const onSubmit = async (data: Movie) => {
+  const onSubmit = async (data: Partial<Movie>) => {
     try {
       setIsLoading(true);
 

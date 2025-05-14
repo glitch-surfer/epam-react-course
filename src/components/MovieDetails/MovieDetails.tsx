@@ -17,7 +17,9 @@ export const MovieDetails: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.state?.movie) setMovie(location.state.movie as Movie);
+    if ((location.state as { movie?: Movie }).movie) {
+      setMovie((location.state as { movie: Movie }).movie);
+    }
   }, [location]);
 
   const onClose = () => navigate(`/?${searchParams.toString()}`);
