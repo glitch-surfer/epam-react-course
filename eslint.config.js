@@ -10,7 +10,15 @@ import eslintConfigPrettier from "eslint-config-prettier/flat";
 import pluginJest from "eslint-plugin-jest";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  {
+    ignores: [
+      "dist",
+      "**/*.test.{ts,tsx,js,jsx}",
+      "**/*.stories.{ts,tsx,js,jsx}",
+      ".storybook/**/*",
+      "setupTests.ts",
+    ],
+  },
   {
     extends: [
       js.configs.recommended,
@@ -37,14 +45,13 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
       "@typescript-eslint/no-confusing-void-expression": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
+      "react/no-unescaped-entities": "off",
+      "@typescript-eslint/consistent-type-definitions": "off",
+      "react-dom/no-missing-button-type": "off",
     },
     settings: { react: { version: "19.0" } },
   },

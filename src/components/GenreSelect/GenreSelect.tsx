@@ -7,7 +7,7 @@ interface GenreSelectProps {
 }
 
 export const GenreSelect: React.FC<GenreSelectProps> = ({
-  genres = [],
+  genres,
   selectedGenre,
   onSelect,
 }) => {
