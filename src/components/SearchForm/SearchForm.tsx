@@ -1,15 +1,14 @@
 import React, { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
-interface SearchFormProps {
+export interface SearchFormContext {
   initialQuery?: string;
   onSearch: (query: string) => void;
 }
 
-export const SearchForm: React.FC<SearchFormProps> = ({
-  initialQuery = "",
-  onSearch,
-}) => {
-  const [query, setQuery] = useState(initialQuery);
+export const SearchForm: React.FC = () => {
+  const { initialQuery, onSearch } = useOutletContext<SearchFormContext>();
+  const [query, setQuery] = useState(initialQuery ?? "");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);

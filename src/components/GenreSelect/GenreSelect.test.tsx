@@ -4,13 +4,15 @@ import { GenreSelect } from "./GenreSelect.tsx";
 import { userEvent } from "@testing-library/user-event";
 
 describe("GenreSelect Component", () => {
-  const mockGenres = ["Action", "Comedy", "Drama", "Horror"];
+  const mockGenres = ["Action", "Comedy", "Drama", "Horror"].map((genre) =>
+    genre.toUpperCase(),
+  );
 
   test("renders all genres passed in props", () => {
     render(
       <GenreSelect
         genres={mockGenres}
-        selectedGenre="Action"
+        selectedGenre="ACTION"
         onSelect={() => {}}
       />,
     );
@@ -22,7 +24,7 @@ describe("GenreSelect Component", () => {
   });
 
   test("highlights the selected genre", () => {
-    const selectedGenre = "Comedy";
+    const selectedGenre = "COMEDY";
     render(
       <GenreSelect
         genres={mockGenres}
@@ -46,12 +48,12 @@ describe("GenreSelect Component", () => {
 
   test("calls onSelect with correct genre when clicked", async () => {
     const mockOnSelect = jest.fn();
-    const genreToClick = "Drama";
+    const genreToClick = "DRAMA";
 
     render(
       <GenreSelect
         genres={mockGenres}
-        selectedGenre="Action"
+        selectedGenre="ACTION"
         onSelect={mockOnSelect}
       />,
     );
@@ -64,7 +66,7 @@ describe("GenreSelect Component", () => {
   });
 
   test("applies correct styling classes to buttons", () => {
-    const selectedGenre = "Action";
+    const selectedGenre = "ACTION";
     render(
       <GenreSelect
         genres={mockGenres}

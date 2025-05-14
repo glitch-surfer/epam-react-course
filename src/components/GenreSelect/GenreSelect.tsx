@@ -31,7 +31,7 @@ export const GenreSelect: React.FC<GenreSelectProps> = ({
             }
           `}
         >
-          {genre}
+          {genre.toUpperCase()}
         </button>
       ))}
     </nav>
