@@ -6,6 +6,7 @@ import * as ReactRouter from "react-router-dom";
 
 jest.mock("react-router-dom", () => ({
   useOutletContext: jest.fn(),
+  Outlet: () => null,
 }));
 
 describe("SearchForm Component", () => {

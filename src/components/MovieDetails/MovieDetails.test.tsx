@@ -2,15 +2,18 @@ import { render, screen } from "@testing-library/react";
 import { MovieDetails } from "./MovieDetails";
 import "@testing-library/jest-dom";
 import { userEvent } from "@testing-library/user-event";
-import * as ReactRouter from "react-router-dom"; // Import React Router to mock hooks
+import * as ReactRouter from "react-router-dom";
+import { Movie } from "../../models/movie.interface.ts";
 
 jest.mock("react-router-dom", () => ({
   useLoaderData: jest.fn(),
   useSearchParams: jest.fn(),
   useNavigate: jest.fn(),
+  useLocation: jest.fn(() => ({ state: mockMovie })),
+  Outlet: () => null,
 }));
 
-const mockMovie = {
+const mockMovie: Movie = {
   title: "La La Land",
   tagline: "Here's to the fools who dream.",
   vote_average: 7.9,

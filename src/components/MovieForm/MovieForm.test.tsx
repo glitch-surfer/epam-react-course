@@ -6,11 +6,11 @@ describe("MovieForm", () => {
   const mockSubmit = jest.fn();
   const initialData = {
     title: "Test Movie",
-    releaseDate: "2023-01-01",
-    posterUrl: "https://example.com/poster.jpg",
-    rating: "8.5",
+    release_date: "2023-01-01",
+    poster_path: "https://example.com/poster.jpg",
+    vote_average: 8.5,
     genres: ["Action", "Drama"],
-    runtime: "120",
+    runtime: 120,
     overview: "Test overview",
   };
 
@@ -30,7 +30,7 @@ describe("MovieForm", () => {
 
     expect(screen.getByLabelText(/title/i)).toHaveValue(initialData.title);
     expect(screen.getByLabelText(/release date/i)).toHaveValue(
-      initialData.releaseDate,
+      initialData.release_date,
     );
   });
 
@@ -54,9 +54,13 @@ describe("MovieForm", () => {
 
     expect(mockSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "New Movie",
-        releaseDate: "2023-12-31",
         genres: ["Action", "Drama"],
+        overview: "New overview",
+        poster_path: "https://example.com/new.jpg",
+        release_date: "2023-12-31",
+        runtime: 150,
+        title: "New Movie",
+        vote_average: 9,
       }),
     );
   });
