@@ -10,15 +10,19 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
+interface MovieState {
+    movie: Movie;
+}
+
 export const MovieDetails: React.FC = () => {
-  const [movie, setMovie] = useState(useLoaderData<{ movie: Movie }>().movie);
+  const [movie, setMovie] = useState(useLoaderData<MovieState>().movie);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if ((location.state as { movie?: Movie }).movie) {
-      setMovie((location.state as { movie: Movie }).movie);
+    if ((location.state as MovieState | null)?.movie) {
+      setMovie((location.state as MovieState).movie);
     }
   }, [location]);
 
