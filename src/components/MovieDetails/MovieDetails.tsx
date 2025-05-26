@@ -1,20 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "../shared/Image.tsx";
 import { Genres } from "../shared/Genres.tsx";
 import { Movie } from "../../models/movie.interface.ts";
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
-interface MovieDetailsProps {
-  movie: Movie;
-  onClose?: () => void;
+interface MovieState {
+    movie: Movie;
 }
 
-export const MovieDetails: React.FC<MovieDetailsProps> = ({
-  movie,
-  onClose,
-}) => {
+export const MovieDetails: React.FC = () => {
+  const [movie, setMovie] = useState(useLoaderData<MovieState>().movie);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if ((location.state as MovieState | null)?.movie) {
+      setMovie((location.state as MovieState).movie);
+    }
+  }, [location]);
+
+  const onClose = () => navigate(`/?${searchParams.toString()}`);
+
   return (
     <div className="flex flex-col md:flex-row bg-[#232323] text-white min-h-[500px]">
       {/* Left side - Image */}
+      <Outlet context={{ initialData: movie }} />
       <div className="md:w-1/3 lg:w-1/4">
         <div className="relative aspect-[2/3] w-full">
           <Image src={movie.poster_path} alt={movie.title} />
@@ -23,28 +40,26 @@ export const MovieDetails: React.FC<MovieDetailsProps> = ({
 
       {/* Right side - Details */}
       <div className="flex-1 p-6 md:p-8">
-        {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        )}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
 
         <div className="space-y-4">
           {/* Title and Year */}

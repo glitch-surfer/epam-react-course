@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FocusTrap } from "focus-trap-react";
 import { Portal } from "react-portal";
 
@@ -15,6 +15,8 @@ export const Dialog: React.FC<DialogProps> = ({
   onClose,
   isOpen,
 }) => {
+  const [isActive, setIsActive] = useState(false);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -25,7 +27,8 @@ export const Dialog: React.FC<DialogProps> = ({
     if (isOpen) {
       document.addEventListener("keydown", handleEscape);
       document.body.style.overflow = "hidden";
-    }
+      setIsActive(true);
+    } else setIsActive(false);
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
@@ -38,6 +41,7 @@ export const Dialog: React.FC<DialogProps> = ({
   return (
     <Portal>
       <FocusTrap
+        active={isActive}
         focusTrapOptions={{
           initialFocus: false,
           fallbackFocus: "#dialog-close-button",
@@ -47,7 +51,7 @@ export const Dialog: React.FC<DialogProps> = ({
           {/* Overlay */}
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={onClose}
+            onClick={() => onClose()}
             data-testid="dialog-overlay"
           />
 
@@ -59,7 +63,7 @@ export const Dialog: React.FC<DialogProps> = ({
                 <div className="text-xl font-semibold text-white">{title}</div>
                 <button
                   id="dialog-close-button"
-                  onClick={onClose}
+                  onClick={() => onClose()}
                   className="text-gray-400 hover:text-white transition-colors p-1"
                   aria-label="Close dialog"
                 >
